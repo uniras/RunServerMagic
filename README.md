@@ -18,7 +18,8 @@ register_run_server()
 
 ### マジックコマンドの使い方
 
-コードセルの冒頭に以下のようにマジックコマンドを記述してください。実行するとアウトプットにiframeが表示されてその中でコードセルのコードがサーバーとして実行されます。
+コードセルの冒頭に`%%run_server`マジックコマンドを記述してください。実行するとコードセルのコードがサーバーとして実行されます。  
+以下はFlaskでHello Worldを表示するサーバーの例です。
 
 ```python
 %%run_server 8000 flask_app.py False
@@ -38,6 +39,18 @@ app.run(port={{server_port}})
 
 `{{server_port}}` はマジックコマンドの引数で指定したポート番号に置き換えられます。
 
+起動したサーバーを停止するには`%stop_server`マジックコマンドを別のコードセルから実行してください。  
+同じポート番号でサーバーを起動した場合は、自動的に古いサーバーを停止してから新しいサーバーを起動します。
+
+ノートブック内でサーバーにアクセスしてwebページを表示する場合は、`IPython.display.IFrame`を使用します。  
+`server_url`には直前に`%%run server`で起動したサーバーのURLが格納されています。
+
+```python
+import IPython
+
+IPython.display.IFrame(src=f"{server_url}/", width="100%", height=500)  # type: ignore
+```
+
 ### マジックコマンド
 
 #### %%run_server
@@ -51,6 +64,16 @@ app.run(port={{server_port}})
 - `port`: サーバーのポート番号を指定します。デフォルトは `8000` です。
 - `file`: サーバーとして起動するために書き出すPythonファイル名を指定します。デフォルトは `server.py` です。
 - `remove`: サーバーを起動した後に書き出したファイルを削除するかどうかを指定します。デフォルトは `True` です。
+
+#### %stop_server
+
+起動したサーバーを停止します。
+
+```jupyter
+%stop_server [port]
+```
+
+- `port`: 停止するサーバーのポート番号を指定します。デフォルトは `8000` です。
 
 ## グローバル変数
 

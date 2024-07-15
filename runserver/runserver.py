@@ -9,14 +9,38 @@ from IPython import get_ipython  # type: ignore
 import IPython.core.magic as magic  # type: ignore
 
 
-def run_server_func(server_port: int, server_file: str, remove_file: str) -> None:
-    # プラットフォームによってシグナルの種類とPythonコマンドを変更
-    if sys.platform == "win32":
-        termsignal = signal.CTRL_C_EVENT
-        py_name = "python"
+def stop_server_func(server_port: int) -> None:
+    # プラットフォームによってシグナルの種類を変更
+    termsignal = signal.CTRL_C_EVENT if sys.platform == "win32" else signal.SIGTERM
+
+    # IPythonのユーザー名前空間を取得
+    userns = get_ipython().user_ns
+
+    if "server_process_list" in userns:
+        server_process_list = userns["server_process_list"]
+        if str(server_port) in server_process_list:
+            server_process = server_process_list[str(server_port)]
+            if server_process.poll() is None:
+                print("サーバーを停止しています...")
+                try:
+                    server_process.send_signal(termsignal)
+                    try:
+                        server_process.wait(10)
+                    except subprocess.TimeoutExpired:
+                        server_process.kill()
+                        time.sleep(5)
+                except: # noqa
+                    pass
+            server_process_list.pop(str(server_port))
     else:
-        termsignal = signal.SIGTERM
-        py_name = "python3"
+        server_process_list = {}
+
+    userns["server_process_list"] = server_process_list
+
+
+def run_server_func(server_port: int, server_file: str, remove_file: str) -> None:
+    # プラットフォームによってPythonコマンドを変更
+    py_name = "python" if sys.platform == "win32" else "python3"
 
     # Colab環境ではpopenの引数にshell=Trueを指定するとうまくいかない？
     try:
@@ -33,28 +57,8 @@ def run_server_func(server_port: int, server_file: str, remove_file: str) -> Non
     else:
         server_url = f"http://localhost:{server_port}"
 
-    # IPythonのユーザー名前空間を取得
-    ipython = get_ipython()
-    userns = ipython.user_ns
-
     # 以前に起動したサーバーを停止
-    if "server_process_list" in userns:
-        server_process_list = userns["server_process_list"]
-        if str(server_port) in server_process_list:
-            server_process = server_process_list[str(server_port)]
-            if server_process.poll() is None:
-                print("以前起動したサーバーを停止しています...")
-                try:
-                    server_process.send_signal(termsignal)
-                    try:
-                        server_process.wait(10)
-                    except subprocess.TimeoutExpired:
-                        server_process.kill()
-                        time.sleep(5)
-                except: # noqa
-                    pass
-    else:
-        server_process_list = {}
+    stop_server_func(server_port)
 
     # サーバーを起動
     print("サーバーを起動しています...")
@@ -76,6 +80,9 @@ def run_server_func(server_port: int, server_file: str, remove_file: str) -> Non
         print(server_process.stdout.read())
         print(server_process.stderr.read())
     else:
+        # IPythonのユーザー名前空間を取得
+        userns = get_ipython().user_ns
+        server_process_list = userns["server_process_list"]
         server_process_list[str(server_port)] = server_process
         userns["server_process_list"] = server_process_list
         userns["server_url"] = server_url
@@ -99,6 +106,14 @@ def run_server(line: str, cell: str) -> None:
     run_server_func(server_port, server_file, remove_file)
 
 
+@magic.register_line_magic
+def stop_server(line: str) -> None:
+    args = shlex.split(line)
+    server_port = int(args[0]) if len(args) > 0 else 8080
+    stop_server_func(server_port)
+
+
 def register_run_server() -> None:
     ipython = get_ipython()
     ipython.register_magic_function(run_server)
+    ipython.register_magic_function(stop_server)
