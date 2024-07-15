@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "runservermagic"
+version = "1.0.0"
+description = "Magic command to run Juypter's code cell on the server."
+readme = "README.md"
+authors = [
+  {name = "Uniras"},
+  {email = "tkappeng@gmail.com"}
+]
+license = {text = "MIT License"}
+keywords = ["server", "jupyter", "magic"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+]
+
+[project.urls]
+Homepage = "https://github.com/uniras/RunServerMagic"
+Repository = "https://github.com/uniras/RunServerMagic"
