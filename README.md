@@ -22,7 +22,7 @@ register_run_server()
 以下はFlaskでHello Worldを表示するサーバーの例です。
 
 ```python
-%%run_server 8000 flask_app.py False
+%%run_server 8000 flask_app.py
 
 from flask import Flask
 
