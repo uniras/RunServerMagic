@@ -40,16 +40,14 @@ def stop_server_func(server_port: int) -> None:
 
 def run_server_func(server_port: int, server_file: str, remove_file: str) -> None:
     # プラットフォームによってPythonコマンドを変更
-    py_name = "python" if sys.platform == "win32" else "python3"
+    py_name = "python " if sys.platform == "win32" else "exec python3 "
 
-    # Colab環境ではpopenの引数にshell=Trueを指定するとうまくいかない？
+    # Colab環境であるかどうかを判定
     try:
         from google.colab.output import eval_js  # type: ignore
         is_colab = True
-        shell_flag = False
     except ImportError:
         is_colab = False
-        shell_flag = True
 
     # サーバーのURLを取得
     if is_colab:
@@ -63,8 +61,9 @@ def run_server_func(server_port: int, server_file: str, remove_file: str) -> Non
     # サーバーを起動
     print("サーバーを起動しています...")
     server_process = subprocess.Popen(
-        [py_name, server_file],
-        shell=shell_flag,
+        py_name +  server_file,
+        encoding="utf-8",
+        shell=True,
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
