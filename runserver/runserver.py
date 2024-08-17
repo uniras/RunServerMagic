@@ -61,7 +61,7 @@ def run_server_func(server_port: int, server_file: str, remove_file: str) -> Non
     # サーバーを起動
     print("サーバーを起動しています...")
     server_process = subprocess.Popen(
-        py_name +  server_file,
+        py_name + server_file,
         encoding="utf-8",
         shell=True,
         text=True,
