@@ -97,9 +97,9 @@ def run_server(line: str, cell: str) -> None:
     server_file = args[1] if len(args) > 1 else "server.py"
     remove_file = args[2] if len(args) > 2 else "True"
 
-    cell = cell.strip().replace("{{server_port}}", str(server_port))
+    cell = cell.strip().replace("{{server_port}}", str(server_port)) + "\n"
 
-    with open(server_file, "w") as f:
+    with open(server_file, "w", encoding="utf-8") as f:
         f.write(cell)
 
     run_server_func(server_port, server_file, remove_file)
