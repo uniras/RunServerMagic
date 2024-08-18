@@ -9,7 +9,7 @@ from IPython import get_ipython  # type: ignore
 import IPython.core.magic as magic  # type: ignore
 
 
-def stop_server_func(server_port: int) -> None:
+def stop_server_func(server_port: int, message: bool = False) -> None:
     # プラットフォームによってシグナルの種類を変更
     termsignal = signal.CTRL_C_EVENT if sys.platform == "win32" else signal.SIGTERM
 
@@ -32,7 +32,12 @@ def stop_server_func(server_port: int) -> None:
                 except: # noqa
                     pass
             server_process_list.pop(str(server_port))
+        else:
+            if message:
+                print("サーバーが起動していません。")
     else:
+        if message:
+            print("サーバーが起動していません。")
         server_process_list = {}
 
     userns["server_process_list"] = server_process_list
@@ -109,7 +114,7 @@ def run_server(line: str, cell: str) -> None:
 def stop_server(line: str) -> None:
     args = shlex.split(line)
     server_port = int(args[0]) if len(args) > 0 else 8080
-    stop_server_func(server_port)
+    stop_server_func(server_port, True)
 
 
 def register_run_server() -> None:
