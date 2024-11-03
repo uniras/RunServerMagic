@@ -58,12 +58,15 @@ IPython.display.IFrame(src=f"{server_url}/", width="100%", height=500)  # type: 
 セル内のPythonコードをサーバーとして起動します。
 
 ```jupyter
-%%run_server [port] [file] [remove]
+%%run_server [port] [file] [remove] [show_iframe] [width] [height]
 ```
 
 - `port`: サーバーのポート番号を指定します。デフォルトは `8000` です。
 - `file`: サーバーとして起動するために書き出すPythonファイル名を指定します。デフォルトは `server.py` です。
 - `remove`: サーバーを起動した後に書き出したファイルを削除するかどうかを指定します。デフォルトは `True` です。
+- `show_iframe`: 起動したサーバーにアクセスするIFrameを表示するかどうかを指定します。デフォルトは `False` です。
+- `width`: IFrameの幅を指定します。デフォルトは `500` です。
+- `height`: IFrameの高さを指定します。デフォルトは `500` です。
 
 #### %stop_server
 
