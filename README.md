@@ -18,11 +18,13 @@ register_run_server()
 
 ### マジックコマンドの使い方
 
-コードセルの冒頭に`%%run_server`マジックコマンドを記述してください。実行するとコードセルのコードがサーバーとして実行されます。  
+コードセルの冒頭に`%%runserv`マジックコマンドを記述してください。実行するとコードセルのコードがサーバーとして実行されます。  
 以下はFlaskでHello Worldを表示するサーバーの例です。
 
+実行するとサーバーを起動し、IFrameでサーバーにアクセスし出力されたwebページを表示します。
+
 ```python
-%%run_server 8000 flask_app.py
+%%runserv 8000
 
 from flask import Flask
 
@@ -39,11 +41,10 @@ app.run(port={{server_port}})
 
 `{{server_port}}` はマジックコマンドの引数で指定したポート番号に置き換えられます。
 
-起動したサーバーを停止するには`%stop_server`マジックコマンドを別のコードセルから実行してください。  
+起動したサーバーを停止するには`%endserv`マジックコマンドを別のコードセルから実行してください。  
 同じポート番号でサーバーを起動した場合は、自動的に古いサーバーを停止してから新しいサーバーを起動します。
 
-ノートブック内でサーバーにアクセスしてwebページを表示する場合は、`IPython.display.IFrame`を使用します。  
-`server_url`には直前に`%%run server`で起動したサーバーのURLが格納されています。
+別のセルから`IPython.display.IFrame`を使用してwebページを表示することもできます。`server_url`には直前に`%%runserv`で起動したサーバーのURLが格納されています。
 
 ```python
 import IPython
@@ -53,27 +54,25 @@ IPython.display.IFrame(src=f"{server_url}/", width="100%", height=500)  # type: 
 
 ### マジックコマンド
 
-#### %%run_server
+#### %%runserv
 
 セル内のPythonコードをサーバーとして起動します。
 
 ```jupyter
-%%run_server [port] [file] [remove] [show_iframe] [width] [height]
+%%runserv [port] [show_iframe] [width] [height]
 ```
 
 - `port`: サーバーのポート番号を指定します。デフォルトは `8000` です。
-- `file`: サーバーとして起動するために書き出すPythonファイル名を指定します。デフォルトは `server.py` です。
-- `remove`: サーバーを起動した後に書き出したファイルを削除するかどうかを指定します。デフォルトは `True` です。
 - `show_iframe`: 起動したサーバーにアクセスするIFrameを表示するかどうかを指定します。デフォルトは `False` です。
 - `width`: IFrameの幅を指定します。デフォルトは `500` です。
 - `height`: IFrameの高さを指定します。デフォルトは `500` です。
 
-#### %stop_server
+#### %endserv
 
 起動したサーバーを停止します。
 
 ```jupyter
-%stop_server [port]
+%endserv [port]
 ```
 
 - `port`: 停止するサーバーのポート番号を指定します。デフォルトは `8000` です。
