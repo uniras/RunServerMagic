@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "runservermagic"
-version = "3.0.0"
+version = "3.0.1"
 description = "Magic command to run Juypter's code cell on the server."
 readme = "README.md"
 authors = [

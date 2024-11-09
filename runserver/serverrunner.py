@@ -52,7 +52,7 @@ def run_server(args: dict) -> None:
 
     port = port_str if isinstance(port_str, int) else int(port_str) if isinstance(port_str, str) and port_str.isdecimal() else 8080
     py_name = "python" if sys.platform == "win32" else "python3"
-    server_code = server_code_arg.strip().replace("{{server_port}}", port) + "\n"
+    server_code = server_code_arg.strip().replace("{{server_port}}", str(port)) + "\n"
 
     # Colab環境であるかどうかを判定
     try:
